@@ -4,8 +4,9 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { createContext } from "react";
 import { v4 as uuid } from "uuid";
 
-type Data = {
+export type Data = {
   title: string;
+  description: string;
   id: string;
 };
 

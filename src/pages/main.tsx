@@ -1,10 +1,8 @@
 import { useCallback } from "react";
-import { useDataQuery, useRemoveDataMutation } from "../lib/fakeApollo";
 import { XIcon } from "@heroicons/react/outline";
+import { Data, useDataQuery, useRemoveDataMutation } from "../lib/fakeApollo";
 
-function MainPage() {
-  const { data, loading } = useDataQuery();
-
+const DataItem = ({ data }: { data: Data }) => {
   const [remove] = useRemoveDataMutation();
   const handleRemove = useCallback(
     (id: string) => {
@@ -13,22 +11,33 @@ function MainPage() {
     [remove]
   );
 
+  return (
+    <li className="flex flex-col space-y-2">
+      <div className="flex items-center space-x-1 font-semibold">
+        <button onClick={() => handleRemove(data.id)}>
+          <XIcon className="w-4 h-4" />
+        </button>
+        <span>{data.title}</span>
+      </div>
+      <p className="text-justify">{data.description}</p>
+    </li>
+  );
+};
+
+function MainPage() {
+  const { data: dataList, loading } = useDataQuery();
+
   const handleAdd = useCallback(() => {
     alert("not implemeted");
   }, []);
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div>
+    <div className="flex justify-center py-8 min-h-screen w-screen">
+      <div className="w-4/5 space-y-6">
         <h1 className="text-2xl font-bold">Data points</h1>
-        <ul>
-          {data?.map((x) => (
-            <li key={x.id} className="flex items-center space-x-2">
-              <span>{x.title}</span>
-              <button onClick={() => handleRemove(x.id)}>
-                <XIcon className="w-4 h-4" />
-              </button>
-            </li>
+        <ul className="space-y-4">
+          {dataList?.map((data: Data) => (
+            <DataItem key={data.id} data={data} />
           ))}
         </ul>
         <button onClick={handleAdd} className="text-sm underline">
