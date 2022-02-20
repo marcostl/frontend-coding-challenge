@@ -1,8 +1,9 @@
-import { useCallback } from "react";
-import { useDataQuery, useRemoveDataMutation } from "./fakeApollo";
-import { FakeAPIProvider } from "./fakeApollo";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { v4 as uuid } from "uuid";
-import { XIcon } from "@heroicons/react/outline";
+import { FakeAPIProvider } from "./lib/fakeApollo";
+import EditPage from "./pages/edit";
+import MainPage from "./pages/main";
+import NewPage from "./pages/new";
 
 export default function App() {
   return (
@@ -12,44 +13,19 @@ export default function App() {
         { title: "Some more data", id: uuid() },
       ]}
     >
-      <Main />
+      <Router>
+        <Switch>
+          <Route exact path="/new">
+            <NewPage />
+          </Route>
+          <Route exact path="/edit/:id">
+            <EditPage />
+          </Route>
+          <Route path="/">
+            <MainPage />
+          </Route>
+        </Switch>
+      </Router>
     </FakeAPIProvider>
-  );
-}
-
-function Main() {
-  const { data, loading } = useDataQuery();
-
-  const [remove] = useRemoveDataMutation();
-  const handleRemove = useCallback(
-    (id: string) => {
-      remove({ id });
-    },
-    [remove]
-  );
-
-  const handleAdd = useCallback(() => {
-    alert("not implemeted");
-  }, []);
-
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div>
-        <h1 className="text-2xl font-bold">Data points</h1>
-        <ul>
-          {data?.map((x) => (
-            <li key={x.id} className="flex items-center space-x-2">
-              <span>{x.title}</span>
-              <button onClick={() => handleRemove(x.id)}>
-                <XIcon className="w-4 h-4" />
-              </button>
-            </li>
-          ))}
-        </ul>
-        <button onClick={handleAdd} className="text-sm underline">
-          Add new
-        </button>
-      </div>
-    </div>
   );
 }
