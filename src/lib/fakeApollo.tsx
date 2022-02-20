@@ -9,16 +9,20 @@ type Data = {
   id: string;
 };
 
-const FakeAPIContext = createContext<[Data[], Dispatch<SetStateAction<Data[]>>]>(
-  [] as unknown as [Data[], Dispatch<SetStateAction<Data[]>>]
-);
+const FakeAPIContext = createContext<
+  [Data[], Dispatch<SetStateAction<Data[]>>]
+>([] as unknown as [Data[], Dispatch<SetStateAction<Data[]>>]);
 
 export const FakeAPIProvider = (props: {
   children: JSX.Element | JSX.Element[];
   initialState: Data[];
 }) => {
   const state = useState<Data[]>(props.initialState);
-  return <FakeAPIContext.Provider value={state}>{props.children}</FakeAPIContext.Provider>;
+  return (
+    <FakeAPIContext.Provider value={state}>
+      {props.children}
+    </FakeAPIContext.Provider>
+  );
 };
 
 const useFakeLoading = () => {
@@ -81,7 +85,9 @@ export function useUpdateDataMutation(): [
   return [
     async ({ data, id }) => {
       return load().then(() => {
-        setData((prev) => prev.map((x) => (x.id === id ? { ...x, ...data } : x)));
+        setData((prev) =>
+          prev.map((x) => (x.id === id ? { ...x, ...data } : x))
+        );
       });
     },
     { loading },
