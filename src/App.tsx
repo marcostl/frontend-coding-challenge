@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { v4 as uuid } from "uuid";
+import { EDIT_ID_PATH, MAIN_PATH, NEW_PATH } from "./constants";
 import { Data, FakeAPIProvider } from "./lib/fakeApollo";
 import EditPage from "./pages/edit";
 import MainPage from "./pages/main";
@@ -29,13 +30,13 @@ export default function App() {
     <FakeAPIProvider initialState={INITIAL_DATA}>
       <Router>
         <Switch>
-          <Route exact path="/new">
+          <Route exact path={NEW_PATH}>
             <NewPage />
           </Route>
-          <Route exact path="/edit/:id">
+          <Route exact path={EDIT_ID_PATH(":id")}>
             <EditPage />
           </Route>
-          <Route path="/">
+          <Route path={MAIN_PATH}>
             <MainPage />
           </Route>
         </Switch>

@@ -2,6 +2,9 @@ import { useCallback } from "react";
 import { XIcon } from "@heroicons/react/outline";
 import LoadingMessage from "../components/LoadingMessage";
 import { Data, useDataQuery, useRemoveDataMutation } from "../lib/fakeApollo";
+import { useHistory } from "react-router-dom";
+import { NEW_PATH } from "../constants";
+import Page from "../components/Page";
 
 const DataItem = ({ data }: { data: Data }) => {
   const [remove, { loading: loadingRemoval }] = useRemoveDataMutation();
@@ -33,29 +36,28 @@ const DataItem = ({ data }: { data: Data }) => {
 
 function MainPage() {
   const { data: dataList, loading } = useDataQuery();
+  const history = useHistory();
 
   const handleAdd = useCallback(() => {
-    alert("not implemeted");
-  }, []);
+    history.push(NEW_PATH);
+  }, [history]);
 
   return (
-    <div className="flex justify-center py-8 min-h-screen w-screen">
-      <div className="w-4/5 space-y-6">
-        <h1 className="text-2xl font-bold">Data points</h1>
-        {loading ? (
-          <LoadingMessage />
-        ) : (
-          <ul className="space-y-4">
-            {dataList?.map((data: Data) => (
-              <DataItem key={data.id} data={data} />
-            ))}
-          </ul>
-        )}
-        <button onClick={handleAdd} className="text-sm underline">
-          Add new
-        </button>
-      </div>
-    </div>
+    <Page>
+      <h1 className="text-2xl font-bold">Data points</h1>
+      {loading ? (
+        <LoadingMessage />
+      ) : (
+        <ul className="space-y-4">
+          {dataList?.map((data: Data) => (
+            <DataItem key={data.id} data={data} />
+          ))}
+        </ul>
+      )}
+      <button onClick={handleAdd} className="text-sm underline">
+        Add new
+      </button>
+    </Page>
   );
 }
 
