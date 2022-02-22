@@ -1,17 +1,17 @@
 import "@testing-library/jest-dom";
 import { render, fireEvent, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route } from "react-router-dom";
-import DataForm from "./DataForm";
+import { NewDataForm } from "./DataForm";
 import { MAIN_PATH, NEW_PATH } from "../../constants";
 import * as fakeApollo from "../../lib/fakeApollo";
 
-describe("DataForm", () => {
+describe("NewDataForm", () => {
   const renderDataForm = () =>
     render(
       <fakeApollo.FakeAPIProvider initialState={[]}>
         <MemoryRouter initialEntries={["/new"]}>
           <Route path={NEW_PATH}>
-            <DataForm />
+            <NewDataForm />
           </Route>
           <Route exact path={MAIN_PATH}>
             <div>Main page</div>

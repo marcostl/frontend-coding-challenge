@@ -1,5 +1,5 @@
 import {
-  initialDataFormState,
+  emptyDataFormState,
   FormAction,
   FormState,
   dataFormReducer as originalDataFormReducer,
@@ -38,26 +38,26 @@ describe("dataReducer", () => {
   });
 
   it("should update the title", () => {
-    const state = dataFormReducer(initialDataFormState, {
+    const state = dataFormReducer(emptyDataFormState, {
       type: "UPDATE_TITLE",
       payload: "My title",
     });
 
     expect(state).toStrictEqual({
-      ...initialDataFormState,
+      ...emptyDataFormState,
       title: { value: "My title", touched: true, error: null },
     });
     checkMockValidators("My title");
   });
 
   it("should update the description", () => {
-    const state = dataFormReducer(initialDataFormState, {
+    const state = dataFormReducer(emptyDataFormState, {
       type: "UPDATE_DESCRIPTION",
       payload: "My description",
     });
 
     expect(state).toStrictEqual({
-      ...initialDataFormState,
+      ...emptyDataFormState,
       description: { value: "My description", touched: true, error: null },
     });
     checkMockValidators("My description");
@@ -66,13 +66,13 @@ describe("dataReducer", () => {
   it("should update the title with an error if the validation fails", () => {
     mockDataValidators(["titleError"]);
 
-    const state = dataFormReducer(initialDataFormState, {
+    const state = dataFormReducer(emptyDataFormState, {
       type: "UPDATE_TITLE",
       payload: "My title",
     });
 
     expect(state).toStrictEqual({
-      ...initialDataFormState,
+      ...emptyDataFormState,
       title: { value: "My title", touched: true, error: "titleError" },
     });
     checkMockValidators("My title");
@@ -81,13 +81,13 @@ describe("dataReducer", () => {
   it("should update the description with an error if the validation fails", () => {
     mockDataValidators(["descriptionError"]);
 
-    const state = dataFormReducer(initialDataFormState, {
+    const state = dataFormReducer(emptyDataFormState, {
       type: "UPDATE_DESCRIPTION",
       payload: "My description",
     });
 
     expect(state).toStrictEqual({
-      ...initialDataFormState,
+      ...emptyDataFormState,
       description: {
         value: "My description",
         touched: true,
@@ -100,13 +100,13 @@ describe("dataReducer", () => {
   it("should iterate over all validators until one of them fails", () => {
     mockDataValidators([null, "error1", "error2"]);
 
-    const state = dataFormReducer(initialDataFormState, {
+    const state = dataFormReducer(emptyDataFormState, {
       type: "UPDATE_TITLE",
       payload: "My title",
     });
 
     expect(state).toStrictEqual({
-      ...initialDataFormState,
+      ...emptyDataFormState,
       title: { value: "My title", touched: true, error: "error1" },
     });
     expect(mockValidators[0]).toHaveBeenCalledWith("My title");
@@ -115,9 +115,9 @@ describe("dataReducer", () => {
   });
 
   it("should clear the data", () => {
-    const state = dataFormReducer(initialDataFormState, {
+    const state = dataFormReducer(emptyDataFormState, {
       type: "CLEAR_DATA",
     });
-    expect(state).toStrictEqual(initialDataFormState);
+    expect(state).toStrictEqual(emptyDataFormState);
   });
 });

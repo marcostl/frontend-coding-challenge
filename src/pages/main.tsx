@@ -1,18 +1,27 @@
 import { useCallback } from "react";
-import { XIcon } from "@heroicons/react/outline";
-import LoadingMessage from "../components/LoadingMessage";
-import { Data, useDataQuery, useRemoveDataMutation } from "../lib/fakeApollo";
 import { useHistory } from "react-router-dom";
-import { NEW_PATH } from "../constants";
+import { PencilIcon, XIcon } from "@heroicons/react/outline";
+import LoadingMessage from "../components/LoadingMessage";
 import Page from "../components/Page";
+import { EDIT_ID_PATH, NEW_PATH } from "../constants";
+import { Data, useDataQuery, useRemoveDataMutation } from "../lib/fakeApollo";
 
 const DataItem = ({ data }: { data: Data }) => {
+  const history = useHistory();
   const [remove, { loading: loadingRemoval }] = useRemoveDataMutation();
+
   const handleRemove = useCallback(
     (id: string) => {
       remove({ id });
     },
     [remove]
+  );
+
+  const handleEdit = useCallback(
+    (data: Data) => {
+      history.push(EDIT_ID_PATH(data.id), { data });
+    },
+    [history]
   );
 
   return (
@@ -24,6 +33,9 @@ const DataItem = ({ data }: { data: Data }) => {
           <div className="flex items-center space-x-1 font-semibold">
             <button onClick={() => handleRemove(data.id)}>
               <XIcon className="w-4 h-4" />
+            </button>
+            <button onClick={() => handleEdit(data)}>
+              <PencilIcon className="w-4 h-4" />
             </button>
             <span>{data.title}</span>
           </div>

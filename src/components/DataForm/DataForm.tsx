@@ -1,13 +1,19 @@
 import { useEffect, useReducer, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { MAIN_PATH } from "../../constants";
-import { useCreateDataMutation } from "../../lib/fakeApollo";
+import {
+  Data,
+  useCreateDataMutation,
+  useUpdateDataMutation,
+} from "../../lib/fakeApollo";
 import LoadingMessage from "../LoadingMessage";
 import "./dataForm.css";
 import {
   FormInput,
   dataFormReducer,
-  initialDataFormState,
+  emptyDataFormState,
+  FormState,
+  getInitialDataForm,
 } from "./dataFormReducer";
 
 const FormLabel = ({
@@ -31,21 +37,21 @@ const FormLabel = ({
   );
 };
 
-const DataForm = () => {
-  const history = useHistory();
-  const [dataSubmitted, setDataSubmitted] = useState(false);
+const DataForm = ({
+  initialDataFormState = emptyDataFormState,
+  loading,
+  onSubmit,
+  submitButtonMessage,
+}: {
+  initialDataFormState?: FormState;
+  loading: boolean;
+  onSubmit: (data: Omit<Data, "id">) => void;
+  submitButtonMessage: string;
+}) => {
   const [formState, dispatch] = useReducer(
     dataFormReducer,
     initialDataFormState
   );
-  const [createData, { loading }] = useCreateDataMutation();
-
-  useEffect(() => {
-    if (dataSubmitted && !loading) {
-      history.push(MAIN_PATH);
-    }
-  }, [dataSubmitted, loading, history]);
-
   const { title, description } = formState;
 
   const dataIsValid =
@@ -60,10 +66,7 @@ const DataForm = () => {
       onSubmit={(e) => {
         e.preventDefault();
         if (!dataIsValid) return;
-        createData({
-          data: { title: title.value, description: description.value },
-        });
-        setDataSubmitted(true);
+        onSubmit({ title: title.value, description: description.value });
       }}
     >
       <FormLabel htmlFor="title" label="Title" formInput={title} />
@@ -108,7 +111,7 @@ const DataForm = () => {
           <LoadingMessage message="Saving your data..." />
         ) : (
           <button disabled={!dataIsValid} type="submit" className="formButton">
-            Add new data
+            {submitButtonMessage}
           </button>
         )}
       </div>
@@ -116,4 +119,51 @@ const DataForm = () => {
   );
 };
 
-export default DataForm;
+export const NewDataForm = () => {
+  const history = useHistory();
+  const [dataSubmitted, setDataSubmitted] = useState(false);
+
+  const [createData, { loading }] = useCreateDataMutation();
+
+  useEffect(() => {
+    if (dataSubmitted && !loading) {
+      history.push(MAIN_PATH);
+    }
+  }, [dataSubmitted, loading, history]);
+
+  return (
+    <DataForm
+      loading={loading}
+      onSubmit={(data) => {
+        createData({ data });
+        setDataSubmitted(true);
+      }}
+      submitButtonMessage="Add new data"
+    />
+  );
+};
+
+export const EditDataForm = ({ data }: { data: Data }) => {
+  const history = useHistory();
+  const [dataSubmitted, setDataSubmitted] = useState(false);
+
+  const [updateData, { loading }] = useUpdateDataMutation();
+
+  useEffect(() => {
+    if (dataSubmitted && !loading) {
+      history.push(MAIN_PATH);
+    }
+  }, [dataSubmitted, loading, history]);
+
+  return (
+    <DataForm
+      initialDataFormState={getInitialDataForm(data)}
+      loading={loading}
+      onSubmit={(newData) => {
+        updateData({ data: { ...newData, id: data.id }, id: data.id });
+        setDataSubmitted(true);
+      }}
+      submitButtonMessage="Edit your data"
+    />
+  );
+};

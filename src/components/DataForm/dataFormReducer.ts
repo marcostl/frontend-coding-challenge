@@ -1,3 +1,4 @@
+import { Data } from "../../lib/fakeApollo";
 import {
   descriptionValidators,
   titleValidators,
@@ -26,7 +27,7 @@ export type FormAction =
     }
   | { type: "CLEAR_DATA" };
 
-export const initialDataFormState: FormState = {
+export const emptyDataFormState: FormState = {
   title: {
     value: "",
     touched: false,
@@ -38,6 +39,19 @@ export const initialDataFormState: FormState = {
     error: null,
   },
 };
+
+export const getInitialDataForm = (data: Data): FormState => ({
+  title: {
+    value: data.title,
+    touched: true,
+    error: getErrorForValue(data.title, titleValidators),
+  },
+  description: {
+    value: data.description,
+    touched: true,
+    error: getErrorForValue(data.description, descriptionValidators),
+  },
+});
 
 const getErrorForValue = <T>(
   value: T,
@@ -58,7 +72,7 @@ const getErrorForValue = <T>(
 };
 
 export const dataFormReducer = (
-  state: FormState = initialDataFormState,
+  state: FormState = emptyDataFormState,
   action: FormAction
 ): FormState => {
   switch (action.type) {
