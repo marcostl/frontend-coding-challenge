@@ -8,7 +8,7 @@
 - [x] It should be possible to clear any field with a click on a button
 - [x] The form should be validated
 - [ ] If you add a lot of data points to the list, it would probably be nice with some pagination
-- [ ] The app should also support editing the title and description of the data points on the route /edit/:id
+- [x] The app should also support editing the title and description of the data points on the route /edit/:id
 - [ ] When deleting a data point, it should be possible to regret and restore it within 10 seconds in some way
 - [ ] Make a components structure that you think makes sense for the app
 - [ ] Use tailwindcss for styling, don't write any custom css
@@ -38,10 +38,14 @@
 - Add loading state
   - I've created a new `LoadingMessage` component that displays a message when the application is loading/updating data The component seems a bit static, as if the application wasn't doing anything. If I have time I'll come back and improve the component.
 
-
 #### 21st Feb ~21:00 - ~00:30
 - Implement the `/new` page
   - Add a `Page` component to be used across pages to maintin style
   - Add `DataForm` component with a reducer to handle changes in inputs and validation
   - With my current implementation, and depending on the validators it can happen that an error message is "prematurely" shown to the user. For example, if we added a min length validator for the description, as soon as the user starts typing the error would be shown. This is weird and shouldn't be the case, the most straight forward solution is to use a "debounced" function that would validate the input after X ms have passed since the last keystroke of the user. I've avoided this mecahnism in my solution for clarity purposes.
 - Add tests for the reducer and the new `DataForm` component
+
+#### 22nd Feb ~18:15 - ~19:15
+- Implement the `/edit` page
+  - I refactored a little bit the `DataForm` component so it could be reused for the edit page
+  - I implemented the edit feature so it takes the data from the `location.state` coming from `react-router` if present. If not, it will fall-back into the Apollo endpoint and it will show a loading message. If no data is returned after Apollo is used then an error is shown along with a link to go back to the main page.
