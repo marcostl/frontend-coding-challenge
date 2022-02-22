@@ -61,13 +61,13 @@ describe("usePaginatedData", () => {
     expect(result.current.nav.index).toBe(0);
     expect(result.current.nav.maxPages).toBe(4);
 
-    act(() => result.current.nav.previous());
+    act(() => result.current.nav.prev());
     expect(result.current.nav.index).toBe(0);
 
     act(() => result.current.nav.next());
     expect(result.current.nav.index).toBe(1);
 
-    act(() => result.current.nav.previous());
+    act(() => result.current.nav.prev());
     expect(result.current.nav.index).toBe(0);
 
     act(() => result.current.nav.goToPage(100));
