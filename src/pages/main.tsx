@@ -1,10 +1,12 @@
-import { useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import { useCallback, useEffect } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import { PencilIcon, XIcon } from "@heroicons/react/outline";
 import LoadingMessage from "../components/LoadingMessage";
 import Page from "../components/Page";
-import { EDIT_ID_PATH, NEW_PATH } from "../constants";
-import { Data, useDataQuery, useRemoveDataMutation } from "../lib/fakeApollo";
+import { EDIT_ID_PATH, MAIN_PATH, NEW_PATH } from "../constants";
+import { Data, useRemoveDataMutation } from "../lib/fakeApollo";
+import PageNavigator from "../components/PageNavigator";
+import usePaginatedData from "../hooks/usePaginatedData";
 
 const DataItem = ({ data }: { data: Data }) => {
   const history = useHistory();
@@ -47,16 +49,30 @@ const DataItem = ({ data }: { data: Data }) => {
 };
 
 function MainPage() {
-  const { data: dataList, loading } = useDataQuery();
+  const {
+    data: { dataList, loading },
+    nav,
+  } = usePaginatedData();
   const history = useHistory();
+  const location = useLocation<{ goToLastPage?: boolean }>();
 
   const handleAdd = useCallback(() => {
     history.push(NEW_PATH);
   }, [history]);
 
+  useEffect(() => {
+    if (dataList !== null && location.state && location.state.goToLastPage) {
+      nav.goToPage(nav.maxPages - 1);
+      history.replace({ pathname: MAIN_PATH });
+    }
+  }, [location.state, nav, dataList, history]);
+
   return (
     <Page>
       <h1 className="text-2xl font-bold">Data points</h1>
+      <button onClick={handleAdd} className="text-sm underline">
+        Add new
+      </button>
       {loading ? (
         <LoadingMessage />
       ) : (
@@ -66,9 +82,7 @@ function MainPage() {
           ))}
         </ul>
       )}
-      <button onClick={handleAdd} className="text-sm underline">
-        Add new
-      </button>
+      {!loading && <PageNavigator navigator={nav} />}
     </Page>
   );
 }

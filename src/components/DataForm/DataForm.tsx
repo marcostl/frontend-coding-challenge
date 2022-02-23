@@ -127,7 +127,7 @@ export const NewDataForm = () => {
 
   useEffect(() => {
     if (dataSubmitted && !loading) {
-      history.push(MAIN_PATH);
+      history.push({ pathname: MAIN_PATH, state: { goToLastPage: true } });
     }
   }, [dataSubmitted, loading, history]);
 
