@@ -7,7 +7,7 @@
 - [x] Make the app support adding of new data points through another page on /new (use useReducer for managing the internal state of this page) (use react-router-dom for routing)
 - [x] It should be possible to clear any field with a click on a button
 - [x] The form should be validated
-- [ ] If you add a lot of data points to the list, it would probably be nice with some pagination
+- [x] If you add a lot of data points to the list, it would probably be nice with some pagination
 - [x] The app should also support editing the title and description of the data points on the route /edit/:id
 - [ ] When deleting a data point, it should be possible to regret and restore it within 10 seconds in some way
 - [ ] Make a components structure that you think makes sense for the app
@@ -49,3 +49,10 @@
 - Implement the `/edit` page
   - I refactored a little bit the `DataForm` component so it could be reused for the edit page
   - I implemented the edit feature so it takes the data from the `location.state` coming from `react-router` if present. If not, it will fall-back into the Apollo endpoint and it will show a loading message. If no data is returned after Apollo is used then an error is shown along with a link to go back to the main page.
+
+#### 22nd Feb ~22:30 - ~01:00
+- Implement the custom hook that will handle the pagination
+  - I've also included some tests for these as testing hooks needs to be handled specifically.
+  - Later I noticed that it might happen that the only item of the last page is deleted and would leave the navigator state inconsistent. I added a useEffect hook to correct this edge case.
+- Implement the `PageNavigator` component and modify the `NewDataForm` so it sets some location state and the app will navigate to the last page when the addition of the data is completed.
+  - I could have had implemented this behvaiour for the `EditDataForm`. but I discarded it for simplicity purposes. Also, the `EditDataForm` component would need to be aware of the page where the data that's being edited is.
