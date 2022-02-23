@@ -13,7 +13,7 @@ import {
   dataFormReducer,
   emptyDataFormState,
   FormState,
-  getInitialDataForm,
+  getInitialDataFormState,
 } from "./dataFormReducer";
 
 const FormLabel = ({
@@ -157,7 +157,7 @@ export const EditDataForm = ({ data }: { data: Data }) => {
 
   return (
     <DataForm
-      initialDataFormState={getInitialDataForm(data)}
+      initialDataFormState={getInitialDataFormState(data)}
       loading={loading}
       onSubmit={(newData) => {
         updateData({ data: { ...newData, id: data.id }, id: data.id });

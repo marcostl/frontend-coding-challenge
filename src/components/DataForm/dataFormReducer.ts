@@ -40,7 +40,7 @@ export const emptyDataFormState: FormState = {
   },
 };
 
-export const getInitialDataForm = (data: Data): FormState => ({
+export const getInitialDataFormState = (data: Data): FormState => ({
   title: {
     value: data.title,
     touched: true,
