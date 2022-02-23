@@ -9,9 +9,9 @@
 - [x] The form should be validated
 - [x] If you add a lot of data points to the list, it would probably be nice with some pagination
 - [x] The app should also support editing the title and description of the data points on the route /edit/:id
-- [ ] When deleting a data point, it should be possible to regret and restore it within 10 seconds in some way
-- [ ] Make a components structure that you think makes sense for the app
-- [ ] Use tailwindcss for styling, don't write any custom css
+- [x] When deleting a data point, it should be possible to regret and restore it within 10 seconds in some way
+- [x] Make a components structure that you think makes sense for the app
+- [x] Use tailwindcss for styling, don't write any custom css
 
 ## Future work
 
@@ -56,3 +56,14 @@
   - Later I noticed that it might happen that the only item of the last page is deleted and would leave the navigator state inconsistent. I added a useEffect hook to correct this edge case.
 - Implement the `PageNavigator` component and modify the `NewDataForm` so it sets some location state and the app will navigate to the last page when the addition of the data is completed.
   - I could have had implemented this behvaiour for the `EditDataForm`. but I discarded it for simplicity purposes. Also, the `EditDataForm` component would need to be aware of the page where the data that's being edited is.
+
+#### 23rd Feb ~18:30 - ~20:50
+- Fix the page numbers on the PageNavigator as they were 0-indexed instead of 1-indexed
+- Add `Toast` component that will be later used for the undo functionality
+  - I've decided to use a portal as the toast should not be part of the *normal* DOM tree and should not interfere with it
+- Add an undo reducer.
+  - I thought at the begninning about creating a custom hook to contain the logic of the undo feature but it became quite unamanageable quickly so I switched back to the old reliable `useReducer` which worked like a charm. The undo state contains information about both the data removed and the UI state as they're tight together.
+  - The state contains information about all data removed. This has been left like this on purpose.
+    - Future versions of the aplication might allow the user to undo even after the 10s have passed
+    - I'm aware that this can pose a problem in terms of memory usage if the user decides to remove a lot ot items. This could be easily fixed by limiting the maximum amounts of item in the state. I haven't dont it to avoid overcomplicating the solution.
+  - The undo implementation returns the removed data to the end of the list. There is some but not sufficient user feedback when the undo has been completed if the user is not on the page where the data is added back. One solution would be to move the user to the page where the data has been added. Again, I haven't implemented this feature for clarity purposes.
