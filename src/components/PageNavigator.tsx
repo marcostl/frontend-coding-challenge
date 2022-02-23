@@ -58,7 +58,7 @@ const PageNavigator = ({ navigator }: { navigator: Navigator }) => {
                 item === index ? "bg-gray-300" : "hover:bg-gray-200"
               }`}
             >
-              {item}
+              {item + 1}
             </button>
           );
         })}
