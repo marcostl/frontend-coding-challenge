@@ -7,16 +7,21 @@ import { EDIT_ID_PATH, MAIN_PATH, NEW_PATH } from "../constants";
 import { Data, useRemoveDataMutation } from "../lib/fakeApollo";
 import PageNavigator from "../components/PageNavigator";
 import usePaginatedData from "../hooks/usePaginatedData";
+import UndoRemovalProvider, {
+  useUndoRemoval,
+} from "../components/UndoRemoval/UndoRemoval";
 
 const DataItem = ({ data }: { data: Data }) => {
   const history = useHistory();
+  const { removeData } = useUndoRemoval();
   const [remove, { loading: loadingRemoval }] = useRemoveDataMutation();
 
   const handleRemove = useCallback(
-    (id: string) => {
-      remove({ id });
+    (data: Data) => {
+      remove({ id: data.id });
+      removeData(data);
     },
-    [remove]
+    [remove, removeData]
   );
 
   const handleEdit = useCallback(
@@ -33,7 +38,7 @@ const DataItem = ({ data }: { data: Data }) => {
       ) : (
         <>
           <div className="flex items-center space-x-1 font-semibold">
-            <button onClick={() => handleRemove(data.id)}>
+            <button onClick={() => handleRemove(data)}>
               <XIcon className="w-4 h-4" />
             </button>
             <button onClick={() => handleEdit(data)}>
@@ -69,20 +74,22 @@ function MainPage() {
 
   return (
     <Page>
-      <h1 className="text-2xl font-bold">Data points</h1>
-      <button onClick={handleAdd} className="text-sm underline">
-        Add new
-      </button>
-      {loading ? (
-        <LoadingMessage />
-      ) : (
-        <ul className="space-y-4">
-          {dataList?.map((data: Data) => (
-            <DataItem key={data.id} data={data} />
-          ))}
-        </ul>
-      )}
-      {!loading && <PageNavigator navigator={nav} />}
+      <UndoRemovalProvider>
+        <h1 className="text-2xl font-bold">Data points</h1>
+        <button onClick={handleAdd} className="text-sm underline">
+          Add new
+        </button>
+        {loading ? (
+          <LoadingMessage />
+        ) : (
+          <ul className="space-y-4">
+            {dataList?.map((data: Data) => (
+              <DataItem key={data.id} data={data} />
+            ))}
+          </ul>
+        )}
+        {!loading && <PageNavigator navigator={nav} />}
+      </UndoRemovalProvider>
     </Page>
   );
 }
